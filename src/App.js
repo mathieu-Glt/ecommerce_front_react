@@ -1,5 +1,5 @@
 import "./App.css";
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/auth/Register";
@@ -10,22 +10,47 @@ import Header from "./components/Header/Header";
 import Cart from "./components/Cart/Cart";
 import ComponentNotFound from "./components/404NotFound/HandleRouteNotFound";
 import { ToastContainer } from "react-toastify";
-import { UserProvider } from "./contexts/userContext";
+import { UserProvider, useUser } from "./contexts/userContext";
 import RequireAuth from "./guards/RequireAuth";
 import { useSelector } from "react-redux";
 import AppRoutes from "./routes";
 import SessionExpiryModal from "./components/SessionExpiryModal";
+import AdminLayout from "./routes/layout/AdminLayout";
+import { currentUser } from "./api/auth";
 
 function App() {
-  const { user } = useSelector((state) => state.user);
-  console.log("user: ", user);
+  const { token } = useSelector((state) => state.user);
+  console.log("token: ", token);
+  const [userRole, setUserRole] = useState(null);
+  console.log("userRole: ", userRole);
+  // Récupérer le rôle de l'utilisateur pour afficher le layout admin ou non
+  React.useEffect(() => {
+    if (token) {
+      currentUser(token)
+        .then((roleUser) => {
+          console.log("roleUser resolved: ", roleUser);
+          setUserRole(roleUser);
+        })
+        .catch((err) => {
+          console.error("Error fetching user role:", err);
+          setUserRole(null);
+        });
+    }
+  }, [token]);
 
   return (
     <div className="App">
       <ToastContainer />
       <UserProvider>
         <Router>
-          <Header />
+          {/* Afficher le layout correspondant au rôle de l'utilisateur */}
+          {userRole?.data?.role === "admin" ? (
+            <AdminLayout />
+          ) : (
+            <>
+              <Header />
+            </>
+          )}
           <AppRoutes /> {/* ✅ toutes les routes de l'application sont ici */}
           <SessionExpiryModal /> {/* ✅ Modal de gestion de session */}
         </Router>

@@ -19,6 +19,7 @@ function useLocalStorage(key, initialValue) {
   // Fonction pour définir une valeur
   const setValue = (value) => {
     try {
+      // Si la valeur est une fonction, l'exécuter avec la valeur actuelle
       const valueToStore =
         value instanceof Function ? value(storedValue) : value;
 

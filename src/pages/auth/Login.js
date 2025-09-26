@@ -1,104 +1,86 @@
-import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
-import logo from "../../assets/eshop1.jpg"; // chemin vers ton logo
-import "./Login.css";
-
-// Composants
 import LoginForm from "../../components/auth/LoginForm";
 import GoogleLoginButton from "../../components/auth/GoogleLoginButton";
-
-// Hooks
 import useAuth from "../../hooks/useAuth";
-import useLogin from "../../hooks/useLogin";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { validationSchema } from "../../validator/validationLogin";
+import {
+  loginWithAzureAction,
+  loginWithGoogleAction,
+} from "../../actions/authActions";
 
-/**
- * Page de connexion
- * Composant principal qui orchestre la logique de connexion
- */
 function Login() {
-  const { user: reduxUser } = useSelector((state) => ({ ...state }));
-  const { user: authUser } = useAuth();
-  const {
-    loading,
-    formData,
-    handleEmailLogin,
-    handleGoogleLogin,
-    updateFormData,
-  } = useLogin();
+  const { user: reduxUser } = useSelector((state) => state.user);
+  const { user, loading, error, loginWithEmail, loginWithGoogle } = useAuth();
+  const dispatch = useDispatch();
 
-  // Log des utilisateurs pour debug
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const location = useLocation();
+
+  // Récupère la page demandée avant redirection
+  const from = location.state?.from?.pathname || "/";
+  console.log("from (login): ", from);
+
   useEffect(() => {
     console.log("Redux user: ", reduxUser);
   }, [reduxUser]);
 
-  // Pré-remplir l'email si disponible
   useEffect(() => {
-    const email = authUser?.emailForRegistration;
+    const email = user?.emailForRegistration;
     if (email) {
-      updateFormData({ email, password: "" });
+      setFormData({ email, password: "" });
     }
-  }, [authUser, updateFormData]);
+  }, [user]);
+
+  // Gestionnaire de soumission du formulaire
+  const handleSubmit = async (data) => {
+    try {
+      await loginWithEmail(data.email, data.password, from);
+      console.log("handleSubmit :", data);
+    } catch (err) {
+      console.error("Erreur de connexion:", err);
+    }
+  };
+
+  // Gestionnaire de connexion Google
+  const handleGoogleLogin = async () => {
+    try {
+      console.log("handleGoogleLogin from:", from);
+      dispatch(loginWithGoogleAction(from));
+    } catch (err) {
+      console.error("Erreur de connexion Google:", err);
+    }
+  };
+
+  // Gestionnaire de connexion Azure AD
+  const handleAzureLogin = async () => {
+    try {
+      console.log("clic azure");
+      console.log("handleAzureLogin from:", from);
+      dispatch(loginWithAzureAction());
+    } catch (error) {
+      console.error("Erreur de connexion Azure:", error);
+    }
+  };
 
   return (
     <div className="login-page">
-      <div className="container p-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card shadow">
-              <div className="card-body p-4">
-                <h1 className="text-center mb-4">Login</h1>
-                <p className="text-center text-muted mb-4">
-                  Please enter your credentials to login.
-                </p>
-
-                {/* Indicateur de chargement */}
-                {loading && (
-                  <div className="text-center mb-3">
-                    {/* <div className="spinner-border text-primary" role="status"> */}
-                    {/* <span className="visually-hidden">Chargement...</span> */}
-                    <div className="loader-container">
-                      <img src={logo} alt="Logo" className="logo-loader" />
-                    </div>
-                    {/* </div> */}
-                  </div>
-                )}
-
-                {/* Formulaire de connexion */}
-                <div className="mb-4">
-                  <LoginForm
-                    onSubmit={handleEmailLogin}
-                    loading={loading}
-                    formData={formData}
-                    onFormDataChange={updateFormData}
-                  />
-                </div>
-
-                {/* Séparateur */}
-                <div className="text-center mb-4">
-                  <span className="text-muted">ou</span>
-                </div>
-
-                {/* Bouton Google */}
-                <div className="mb-4">
-                  <GoogleLoginButton
-                    onClick={handleGoogleLogin}
-                    loading={loading}
-                  />
-                </div>
-
-                {/* Lien mot de passe oublié */}
-                <div className="text-center">
-                  <Link to="/forgot-password" className="text-decoration-none">
-                    Forgot password?
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Formulaire de connexion avec style moderne */}
+      <LoginForm
+        onSubmit={handleSubmit}
+        loading={loading}
+        formData={formData}
+        onFormDataChange={setFormData}
+        onGoogleLogin={handleGoogleLogin}
+        onAzureLogin={handleAzureLogin}
+      />
     </div>
   );
 }

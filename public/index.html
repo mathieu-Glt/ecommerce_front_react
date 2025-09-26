@@ -9,6 +9,11 @@
       name="description"
       content="Web site created using create-react-app"
     />
+    <!-- Content Security Policy pour autoriser Azure AD / MSAL -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="worker-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://login.microsoftonline.com https://*.msidentity.com;"
+    />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
       manifest.json provides metadata used when your web app is installed on a

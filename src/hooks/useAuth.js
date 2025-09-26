@@ -1,164 +1,158 @@
-import { useState, useEffect } from "react";
-import useLocalStorage from "./useLocalStorage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import useToast from "./useToast";
+import {
+  loginWithEmailAction,
+  loginWithGoogleAction,
+  registerAction,
+  logout,
+  getCurrentUserAction,
+  updateUserProfileAction,
+  clearAuthErrors,
+  loginWithAzureAction,
+} from "../actions/authActions";
 
 /**
- * Hook personnalisé pour gérer l'authentification
- * Gère de manière cohérente user et token dans localStorage
+ * Hook personnalisé pour gérer l'authentification via Redux Actions
+ * Remplace useLogin et useRegister en utilisant les actions Redux
  */
 function useAuth() {
   const dispatch = useDispatch();
-  const [user, setUser, removeUser, clearUser, hasUser] = useLocalStorage(
-    "user",
-    null
+  const navigate = useNavigate();
+  const {
+    auth: authMessages,
+    showSuccess,
+    showError,
+    showLoading,
+    updateToSuccess,
+    updateToError,
+  } = useToast();
+
+  // Sélecteurs Redux
+  const { user, token, loading, error, isAuthenticated } = useSelector(
+    (state) => state.user
   );
-  const [token, setToken, removeToken, clearToken, hasToken] = useLocalStorage(
-    "token",
-    null
-  );
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // Vérifier si l'utilisateur est authentifié
-  useEffect(() => {
-    setIsAuthenticated(!!(user && token));
-  }, [user, token]);
-
-  // ✅ Synchroniser avec sessionStorage
-  const syncWithSessionStorage = (userData, userToken) => {
+  // Login with email
+  const loginWithEmail = async (email, password, redirectTo = "/") => {
+    console.log("loginWithEmail :", email, password, redirectTo);
+    const loadingToast = showLoading("Connection in progress...");
     try {
-      if (userData) {
-        sessionStorage.setItem("user", JSON.stringify(userData));
-      } else {
-        sessionStorage.removeItem("user");
-      }
-
-      if (userToken) {
-        sessionStorage.setItem("token", userToken);
-      } else {
-        sessionStorage.removeItem("token");
-      }
-    } catch (error) {
-      console.error("Erreur lors de la synchronisation sessionStorage:", error);
+      const result = await dispatch(loginWithEmailAction(email, password));
+      console.log("loginWithEmail result :", result);
+      updateToSuccess(
+        loadingToast,
+        authMessages.loginSuccess(result.data.user)
+      );
+      navigate(redirectTo, { replace: true });
+      return result;
+    } catch (err) {
+      updateToError(loadingToast, authMessages.loginError);
+      throw err;
+    }
+  };
+  // Login with Azure
+  const loginWithAzure = async (redirectTo = "/") => {
+    const loadingToast = showLoading("Azure Connection in progress...");
+    try {
+      const result = await dispatch(loginWithAzureAction());
+      updateToSuccess(loadingToast, authMessages.azureLoginSuccess);
+      navigate(redirectTo, { replace: true });
+      return result;
+    } catch (err) {
+      updateToError(loadingToast, authMessages.azureLoginError);
+      throw err;
     }
   };
 
-  // ✅ Synchroniser avec Redux
-  const syncWithRedux = (userData, userToken) => {
+  // Login with Google
+  const loginWithGoogle = async (redirectTo = "/") => {
+    const loadingToast = showLoading("Google Connection in progress...");
     try {
-      if (userData && userToken) {
-        dispatch({
-          type: "LOGGED_IN_USER",
-          payload: { user: userData, token: userToken },
-        });
-      } else {
-        dispatch({ type: "LOGOUT" });
-      }
-    } catch (error) {
-      console.error("Erreur lors de la synchronisation Redux:", error);
+      const result = await dispatch(loginWithGoogleAction());
+      updateToSuccess(loadingToast, authMessages.googleLoginSuccess);
+      navigate(redirectTo, { replace: true });
+      return result;
+    } catch (err) {
+      updateToError(loadingToast, authMessages.googleLoginError);
+      throw err;
     }
   };
 
-  // Fonction pour connecter un utilisateur
-  const login = (userData, userToken) => {
+  // Register
+  const register = async (userData, redirectTo = "/") => {
+    const loadingToast = showLoading("Registration in progress...");
     try {
-      setUser(userData);
-      setToken(userToken);
-
-      // ✅ Synchroniser avec sessionStorage et Redux
-      syncWithSessionStorage(userData, userToken);
-      syncWithRedux(userData, userToken);
-
-      console.log("✅ Utilisateur connecté avec succès");
-    } catch (error) {
-      console.error("❌ Erreur lors de la connexion:", error);
-      throw error;
+      const result = await dispatch(registerAction(userData));
+      updateToSuccess(
+        loadingToast,
+        authMessages.registerSuccess(result.data.user)
+      );
+      navigate(redirectTo, { replace: true });
+      return result;
+    } catch (err) {
+      updateToError(loadingToast, authMessages.registerError);
+      throw err;
     }
   };
 
-  // Fonction pour déconnecter un utilisateur
-  const logout = () => {
+  // Logout
+  const logout = async (redirectTo = "/login") => {
     try {
-      removeUser();
-      removeToken();
-
-      // ✅ Nettoyer sessionStorage et Redux
-      syncWithSessionStorage(null, null);
-      syncWithRedux(null, null);
-
-      console.log("✅ Utilisateur déconnecté avec succès");
-    } catch (error) {
-      console.error("❌ Erreur lors de la déconnexion:", error);
-      throw error;
+      await dispatch(logout());
+      showSuccess(authMessages.logoutSuccess);
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      showError("Error during logout");
+      throw err;
     }
   };
 
-  // Fonction pour mettre à jour les données utilisateur
-  const updateUser = (newUserData) => {
+  // Get current user
+  const getCurrentUser = async (token) => {
     try {
-      setUser(newUserData);
-
-      // ✅ Synchroniser avec sessionStorage et Redux
-      syncWithSessionStorage(newUserData, token);
-      syncWithRedux(newUserData, token);
-
-      console.log("✅ Données utilisateur mises à jour");
-    } catch (error) {
-      console.error("❌ Erreur lors de la mise à jour:", error);
-      throw error;
+      const result = await dispatch(getCurrentUserAction(token));
+      return result;
+    } catch (err) {
+      throw err;
     }
   };
 
-  // Fonction pour rafraîchir le token
-  const refreshToken = (newToken) => {
+  // Update user profile
+  const updateUserProfile = async (userData, token) => {
+    const loadingToast = showLoading("Profile update in progress...");
     try {
-      setToken(newToken);
-
-      // ✅ Synchroniser avec sessionStorage et Redux
-      syncWithSessionStorage(user, newToken);
-      syncWithRedux(user, newToken);
-
-      console.log("✅ Token rafraîchi avec succès");
-    } catch (error) {
-      console.error("❌ Erreur lors du rafraîchissement du token:", error);
-      throw error;
+      const result = await dispatch(updateUserProfileAction(userData, token));
+      updateToSuccess(loadingToast, authMessages.profileUpdated);
+      return result;
+    } catch (err) {
+      updateToError(loadingToast, authMessages.profileUpdateError);
+      throw err;
     }
   };
 
-  // Fonction pour vérifier si l'authentification est valide
-  const isAuthValid = () => {
-    return !!(user && token && isAuthenticated);
-  };
-
-  // Fonction pour obtenir les informations d'authentification
-  const getAuthInfo = () => {
-    return {
-      user,
-      token,
-      isAuthenticated,
-      hasUser: hasUser(),
-      hasToken: hasToken(),
-    };
+  // Clear errors
+  const clearErrors = () => {
+    dispatch(clearAuthErrors());
   };
 
   return {
-    // État
+    // État Redux
     user,
     token,
+    loading,
+    error,
     isAuthenticated,
 
-    // Fonctions
-    login,
+    // Actions
+    loginWithEmail,
+    loginWithGoogle,
+    loginWithAzure,
+    register,
     logout,
-    updateUser,
-    refreshToken,
-    isAuthValid,
-    getAuthInfo,
-
-    // Fonctions utilitaires
-    hasUser: hasUser(),
-    hasToken: hasToken(),
-    clearUser,
-    clearToken,
+    getCurrentUser,
+    updateUserProfile,
+    clearErrors,
   };
 }
 

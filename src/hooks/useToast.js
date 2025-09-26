@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import { toast } from "react-toastify";
 
 /**
@@ -16,72 +17,77 @@ function useToast() {
   };
 
   // ✅ Succès
-  const showSuccess = (message, config = {}) => {
+  const showSuccess = useCallback((message, config = {}) => {
+    console.log("message in showSuccess :: ", message);
     toast.success(message, { ...defaultConfig, ...config });
-  };
+  }, []);
 
   // ❌ Erreur
-  const showError = (message, config = {}) => {
+  const showError = useCallback((message, config = {}) => {
     toast.error(message, { ...defaultConfig, ...config });
-  };
+  }, []);
 
   // ⚠️ Avertissement
-  const showWarning = (message, config = {}) => {
+  const showWarning = useCallback((message, config = {}) => {
     toast.warning(message, { ...defaultConfig, ...config });
-  };
+  }, []);
 
   // ℹ️ Information
-  const showInfo = (message, config = {}) => {
+  const showInfo = useCallback((message, config = {}) => {
     toast.info(message, { ...defaultConfig, ...config });
-  };
+  }, []);
 
   // 🔄 Toast de chargement (pour les actions longues)
-  const showLoading = (message = "Loading...", config = {}) => {
+  const showLoading = useCallback((message = "Loading...", config = {}) => {
     return toast.loading(message, {
       ...defaultConfig,
       autoClose: false,
       ...config,
     });
-  };
+  }, []);
 
   // ✅ Succès avec toast de chargement
-  const updateToSuccess = (toastId, message = "Success !") => {
+  const updateToSuccess = useCallback((toastId, message = "Success !") => {
     toast.update(toastId, {
       render: message,
       type: "success",
       isLoading: false,
       autoClose: 3000,
     });
-  };
+  }, []);
 
   // ❌ Erreur avec toast de chargement
-  const updateToError = (toastId, message = "Error !") => {
+  const updateToError = useCallback((toastId, message = "Error !") => {
     toast.update(toastId, {
       render: message,
       type: "error",
       isLoading: false,
       autoClose: 5000,
     });
-  };
+  }, []);
 
   // 🗑️ Fermer un toast spécifique
-  const dismissToast = (toastId) => {
+  const dismissToast = useCallback((toastId) => {
     toast.dismiss(toastId);
-  };
+  }, []);
 
   // 🗑️ Fermer tous les toasts
-  const dismissAll = () => {
+  const dismissAll = useCallback(() => {
     toast.dismiss();
-  };
+  }, []);
 
   // 🎯 Messages prédéfinis pour l'authentification
   const authMessages = {
-    loginSuccess: (displayName) => `Welcome back ${displayName} !`,
+    loginSuccess: (user) => `Welcome back ${user?.firstname || "User"} !`,
     loginError: "Login failed",
     googleLoginSuccess: "Login with Google success",
+    azureLoginSuccess: "Login with Azure success",
     googleLoginError: "Login with Google failed",
     logoutSuccess: "Logout successful",
-    registerSuccess: "Registration successful",
+    registerSuccess: (user) =>
+      `Welcome ${
+        user?.firstname || "User"
+      } ! Account created and you're now logged in!`,
     registerError: "Registration failed",
     passwordResetSent: "Password reset email sent",
     passwordResetError: "Password reset failed",

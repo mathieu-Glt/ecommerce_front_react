@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useUser } from "../contexts/userContext";
 import useSessionManager from "../hooks/useSessionManager";
+import { useSelector } from "react-redux";
 
 function SessionExpiryModal() {
   const [countdown, setCountdown] = useState(30);
-  const { user } = useUser();
+  const { user } = useSelector((state) => state.user);
   const {
     sessionExpired,
     showWarning,
@@ -114,7 +115,7 @@ function SessionExpiryModal() {
         <div className="modal-content">
           <div className="modal-header bg-warning">
             <h5 className="modal-title text-dark">
-              {sessionExpired ? "⏰ Session expirée" : "⚠️ Session va expirer"}
+              {sessionExpired ? "⏰ Session expired" : "⚠️ Session will expire"}
             </h5>
             <button
               type="button"
@@ -129,8 +130,8 @@ function SessionExpiryModal() {
               <i className="fas fa-clock fa-3x text-warning mb-3"></i>
               <h6>
                 {sessionExpired
-                  ? `Votre session a expiré. Vous serez déconnecté dans ${countdown} secondes.`
-                  : `Votre session va expirer dans ${Math.floor(
+                  ? `Your session has expired. You will be logged out in ${countdown} seconds.`
+                  : `Your session will expire in ${Math.floor(
                       timeUntilExpiry / 60
                     )}:${(timeUntilExpiry % 60).toString().padStart(2, "0")}`}
               </h6>
@@ -138,18 +139,18 @@ function SessionExpiryModal() {
 
             <div className="alert alert-info">
               <p className="mb-2">
-                <strong>Bonjour {user?.email} !</strong>
+                <strong>Hello {user?.firstname} !</strong>
               </p>
               <p className="mb-0">
                 {sessionExpired
-                  ? "Votre session a expiré. Voulez-vous rester connecté ?"
-                  : "Votre session va expirer bientôt. Voulez-vous la prolonger ?"}
+                  ? "Your session has expired. Do you want to stay connected ?"
+                  : "Your session will expire soon. Do you want to extend it ?"}
               </p>
               <div className="mt-2">
                 <small className="text-muted">
                   <i className="fas fa-info-circle me-1"></i>
-                  <strong>Prolonger :</strong> Reste connecté •{" "}
-                  <strong>Déconnecter :</strong> Supprime toutes les données
+                  <strong>Extend :</strong> Stay connected •{" "}
+                  <strong>Log out :</strong> Delete all data
                 </small>
               </div>
             </div>
@@ -165,8 +166,8 @@ function SessionExpiryModal() {
               <div className="alert alert-warning">
                 <small>
                   <i className="fas fa-info-circle me-1"></i>
-                  Votre session expire automatiquement après 2 minutes
-                  d'inactivité.
+                  Your session expires automatically after 2 minutes of
+                  inactivity.
                 </small>
               </div>
             )}
@@ -175,9 +176,9 @@ function SessionExpiryModal() {
               <div className="alert alert-warning">
                 <small>
                   <i className="fas fa-exclamation-triangle me-1"></i>
-                  <strong>Attention :</strong> Si vous n'agissez pas dans{" "}
-                  {countdown} secondes, vous serez automatiquement déconnecté et
-                  toutes vos données seront supprimées.
+                  <strong>Caution :</strong> If you don't act in {countdown}{" "}
+                  seconds, you will be automatically logged out and all your
+                  data will be deleted.
                 </small>
               </div>
             )}
@@ -191,7 +192,7 @@ function SessionExpiryModal() {
               style={{ cursor: "pointer" }}
             >
               <i className="fas fa-sign-out-alt me-2"></i>
-              Se déconnecter
+              Log out
             </button>
             <button
               type="button"
@@ -200,7 +201,7 @@ function SessionExpiryModal() {
               style={{ cursor: "pointer" }}
             >
               <i className="fas fa-clock me-2"></i>
-              {sessionExpired ? "Restaurer la session" : "Prolonger la session"}
+              {sessionExpired ? "Restore session" : "Continue session"}
             </button>
           </div>
         </div>

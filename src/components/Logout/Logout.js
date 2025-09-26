@@ -1,12 +1,35 @@
 import React from "react";
 import { useUser } from "../../contexts/userContext";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import useToast from "../../hooks/useToast";
+import { clearAuthData } from "../../utils/auth";
 
 const Logout = () => {
-  const { logout, user } = useUser();
+  const { logout, user, userLocalStorage } = useUser();
   const dispatch = useDispatch();
+  const reduxState = useSelector((state) => state);
+  const reduxUser = reduxState?.user?.user;
   const { auth: authMessages, showError, showSuccess } = useToast();
+
+  // Utiliser Redux comme source principale d'authentification
+  // Vérifier que l'utilisateur a des données réelles (pas un objet vide)
+  const hasValidUser = (userData) => {
+    return (
+      userData &&
+      typeof userData === "object" &&
+      Object.keys(userData).length > 0
+    );
+  };
+
+  const authenticatedUser =
+    hasValidUser(reduxUser) ||
+    hasValidUser(userLocalStorage) ||
+    hasValidUser(user);
+
+  console.log("Logout component - user:", user);
+  console.log("Logout component - userLocalStorage:", userLocalStorage);
+  console.log("Logout component - reduxUser:", reduxUser);
+  console.log("Logout component - authenticatedUser:", authenticatedUser);
 
   const handleLogout = () => {
     try {
@@ -16,6 +39,7 @@ const Logout = () => {
 
       // Nettoyer le state Redux
       dispatch({ type: "LOGOUT", payload: null });
+      clearAuthData();
       // Afficher un message de succès avec le hook useToast
       showSuccess(authMessages.logoutSuccess);
       // La redirection sera gérée automatiquement par RequireAuth
@@ -27,7 +51,7 @@ const Logout = () => {
   };
 
   // Si l'utilisateur n'est pas connecté, ne pas afficher le bouton
-  if (!user) {
+  if (!authenticatedUser) {
     return null;
   }
 

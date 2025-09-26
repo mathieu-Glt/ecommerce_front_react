@@ -1,57 +1,32 @@
 import React, { useEffect } from "react";
 import { useUser } from "../../contexts/userContext";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/eshop1.jpg";
+import logo from "../../assets/logo.png";
+import { useSelector } from "react-redux";
 
 function Cart() {
   const navigate = useNavigate();
-  const { user, profile, loading } = useUser();
+  const { user, isAuthenticated } = useSelector((state) => state.user);
+  console.log("user in Cart :: ", user);
+  console.log("isAuthenticated in Cart :: ", isAuthenticated);
 
+  // Rediriger vers la connexion si l'utilisateur n'est pas connecté
   useEffect(() => {
-    console.log("Cart - Debug Info:");
-    console.log("  user:", user);
-    console.log("  profile:", profile);
-    console.log("  loading:", loading);
-
-    // ✅ Attendre que le chargement soit terminé
-    if (!loading) {
-      if (!user) {
-        console.log("Cart - Pas d'utilisateur, redirection vers login");
-        navigate("/login");
-      } else {
-        console.log("Cart - Utilisateur connecté, affichage du panier");
-      }
+    if (!isAuthenticated || !user) {
+      console.log("Utilisateur non connecté, redirection vers login");
+      navigate("/login", { state: { from: "/cart" } });
     }
-  }, [user, profile, loading, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
-  // ✅ Afficher un message de chargement pendant la vérification
-  if (loading) {
+  // Afficher un message de chargement si l'utilisateur n'est pas encore chargé
+  if (!isAuthenticated || !user) {
     return (
       <div className="container mt-4">
         <div className="text-center">
           <div className="spinner-border" role="status">
-            <img src={logo} alt="Logo" className="logo-loader" />
+            <span className="visually-hidden">Loading...</span>
           </div>
-          <p className="mt-2">Checking authentication...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // ✅ Rediriger si pas d'utilisateur
-  if (!user) {
-    return (
-      <div className="container mt-4">
-        <div className="text-center">
-          <div className="alert alert-warning">
-            <p>You must be logged in to access the cart.</p>
-            <button
-              className="btn btn-primary"
-              onClick={() => navigate("/login")}
-            >
-              Login
-            </button>
-          </div>
+          <p className="mt-2">Vérification de l'authentification...</p>
         </div>
       </div>
     );
@@ -60,20 +35,26 @@ function Cart() {
   return (
     <div className="container mt-4">
       <h1>My Cart</h1>
-      <p>Welcome {profile?.firstname || user.email} !</p>
+      <p>Welcome {user?.firstname || user?.name || user?.email || "User"} !</p>
       <div className="alert alert-info">Your cart is empty for the moment.</div>
 
       {/* Debug info */}
       <div className="mt-4 p-3 bg-light rounded">
         <h6>Debug Info:</h6>
         <p>
-          <strong>User UID:</strong> {user.uid}
+          <strong>User ID:</strong> {user?._id || user?.uid || "N/A"}
         </p>
         <p>
-          <strong>Email:</strong> {user.email}
+          <strong>Email:</strong> {user?.email || "N/A"}
         </p>
         <p>
-          <strong>Profile:</strong> {JSON.stringify(profile, null, 2)}
+          <strong>Name:</strong> {user?.name || user?.firstname || "N/A"}
+        </p>
+        <p>
+          <strong>Role:</strong> {user?.role || "N/A"}
+        </p>
+        <p>
+          <strong>Profile:</strong> {JSON.stringify(user, null, 2)}
         </p>
       </div>
     </div>

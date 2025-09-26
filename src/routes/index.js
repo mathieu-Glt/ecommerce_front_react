@@ -2,11 +2,25 @@
 import { Routes, Route } from "react-router-dom";
 import { lazy } from "react";
 import Loadable from "./components/Loadable"; // corrige le chemin si besoin
-import Test from "../components/test/test";
 import SessionTest from "../components/SessionTest";
 // Guards
 import RequireAuth from "../guards/RequireAuth";
 import RequireRoleAdmin from "../guards/RequireRoleAdmin";
+import DashboardAdmin from "../pages/Admin/DashboardAdmin";
+import SettingsAdmin from "../pages/Admin/SettingsAdmin";
+import AdminLayout from "./layout/AdminLayout";
+import ResetForgotPassword from "../pages/auth/ResetForgotPassword";
+import ResetPassword from "../pages/auth/ResetPassword";
+import Test from "../components/UTest/Test";
+import CategoryAdmin from "../pages/Admin/AdminCategory";
+import CouponsAdmin from "../pages/Admin/AdminCoupons";
+import ProductAdmin from "../pages/Admin/AdminProduct";
+import ManageUsersApp from "../pages/Admin/ManageUsersApp";
+import AdminSub from "../pages/Admin/AdminSub";
+import EditCategory from "../pages/Admin/EditCategory";
+import EditProduct from "../pages/Admin/EditProduct";
+import EditUser from "../pages/Admin/EditUser";
+import { UserProvider } from "../contexts/userContext";
 
 // Authentication
 const Register = Loadable(lazy(() => import("../pages/auth/Register")));
@@ -14,9 +28,12 @@ const Login = Loadable(lazy(() => import("../pages/auth/Login")));
 const ForgotPassword = Loadable(
   lazy(() => import("../pages/auth/ForgotPassword"))
 );
+const OAuthRedirect = Loadable(lazy(() => import("../pages/OAuthRedirect")));
 
 // Pages principales
 const Home = Loadable(lazy(() => import("../pages/Home")));
+const Products = Loadable(lazy(() => import("../pages/Products")));
+const ProductDetail = Loadable(lazy(() => import("../pages/ProductDetail")));
 const Cart = Loadable(lazy(() => import("../components/Cart/Cart")));
 const ElementNotFound = Loadable(
   lazy(() => import("../components/404NotFound/HandleRouteNotFound"))
@@ -24,39 +41,75 @@ const ElementNotFound = Loadable(
 
 export default function AppRoutes() {
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={
-          // <RequireAuth>
-          <Home />
-          // </RequireAuth>
-        }
-      />
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/shopping-cart"
-        element={
-          <RequireAuth>
-            <Cart />
-          </RequireAuth>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <RequireRoleAdmin>
-            <Test />
-          </RequireRoleAdmin>
-        }
-      />
-      {/* Route temporaire pour debug */}
-      {/* Route de test sans protection */}
-      <Route path="/test" element={<Test />} />
-      <Route path="/session-test" element={<SessionTest />} />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="*" element={<ElementNotFound />} />
-    </Routes>
+    <UserProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <Home />
+            </RequireAuth>
+          }
+        />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
+        {/* <Route path="/oauth/redirect" element={<OAuthRedirect />} /> */}
+
+        <Route path="/products" element={<Products />} />
+        <Route path="/product/:slug" element={<ProductDetail />} />
+        <Route
+          path="/cart"
+          element={
+            <RequireAuth>
+              <Cart />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/shopping-cart"
+          element={
+            <RequireAuth>
+              <Cart />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/test"
+          element={
+            <RequireAuth>
+              <Test />
+            </RequireAuth>
+          }
+        />
+        {/* Route temporaire pour debug */}
+        <Route path="/session-test" element={<SessionTest />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+
+        {/* Routes admin protégées par le guard RequireRoleAdmin */}
+        <Route
+          path="/admin/*"
+          element={
+            <RequireRoleAdmin>
+              <AdminLayout />
+            </RequireRoleAdmin>
+          }
+        >
+          <Route path="dashboard" element={<DashboardAdmin />} />
+          <Route path="settings" element={<SettingsAdmin />} />
+          <Route path="category" element={<CategoryAdmin />} />
+          <Route path="category/edit/:categoryId" element={<EditCategory />} />
+          <Route path="coupons" element={<CouponsAdmin />} />
+          <Route path="products" element={<ProductAdmin />} />
+          <Route path="product/edit/:productId" element={<EditProduct />} />
+          <Route path="users" element={<ManageUsersApp />} />
+          <Route path="user/edit/:userId" element={<EditUser />} />
+          <Route path="sub" element={<AdminSub />} />
+        </Route>
+
+        <Route path="*" element={<ElementNotFound />} />
+      </Routes>
+    </UserProvider>
   );
 }

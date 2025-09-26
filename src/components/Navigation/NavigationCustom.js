@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
+import PropTypes from "prop-types";
 import {
   AppstoreOutlined,
   UserAddOutlined,
@@ -9,11 +10,22 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 
-function NavigationCustom({ paths }) {
+function NavigationCustom({
+  paths,
+  authenticatedUser,
+  user,
+  handleClick,
+  currentUrl,
+}) {
   const location = useLocation();
 
+  // ✅ Couleur selon rôle
+  const navStyle = {
+    backgroundColor: user?.role === "admin" ? "black" : "blue",
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-dark" style={navStyle}>
       <div className="container">
         {/* Logo/Brand */}
         <Link className="navbar-brand" to="/">
@@ -36,7 +48,6 @@ function NavigationCustom({ paths }) {
         {/* Menu de navigation */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto">
-            {/* Éléments de gauche */}
             <li className="nav-item">
               <Link
                 className={`nav-link ${
@@ -52,14 +63,20 @@ function NavigationCustom({ paths }) {
           {/* Éléments de droite */}
           <ul className="navbar-nav">
             {paths.map((item) => {
-              // Ignorer les éléments spéciaux comme le spacer
-              if (item.key === "spacer" || item.disabled) {
-                return null;
-              }
+              if (item.key === "spacer" || item.disabled) return null;
+
+              const isAuthLink =
+                item.key === "register" || item.key === "login";
+              const linkStyle = isAuthLink ? { fontWeight: "600" } : {};
+              const linkClass = `nav-link ${
+                isAuthLink ? "text-dark" : "text-white"
+              }`;
 
               return (
                 <li key={item.key} className="nav-item">
-                  <div className="nav-link">{item.label}</div>
+                  <div className={linkClass} style={linkStyle}>
+                    {item.label}
+                  </div>
                 </li>
               );
             })}
@@ -69,5 +86,24 @@ function NavigationCustom({ paths }) {
     </nav>
   );
 }
+
+NavigationCustom.propTypes = {
+  paths: PropTypes.arrayOf(
+    PropTypes.shape({
+      key: PropTypes.string.isRequired,
+      label: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
+      disabled: PropTypes.bool,
+    })
+  ).isRequired,
+  authenticatedUser: PropTypes.bool,
+  user: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    name: PropTypes.string,
+    email: PropTypes.string,
+    role: PropTypes.string,
+  }),
+  handleClick: PropTypes.func,
+  currentUrl: PropTypes.string,
+};
 
 export default NavigationCustom;

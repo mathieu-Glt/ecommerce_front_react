@@ -1,15 +1,15 @@
 import axios from "axios";
 import { auth } from "../config/firebase";
 
-// Function to validate if a token is a Firebase ID token
+// Fonction pour valider si un token est un token Firebase ID
 export const isValidFirebaseToken = (token) => {
   if (!token) return false;
 
-  // Firebase ID tokens start with this specific header
+  // Les tokens Firebase ID commencent avec ce header spécifique
   return token.startsWith("eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9");
 };
 
-// Function to get a fresh Firebase ID token
+// Fonction pour obtenir un nouveau token Firebase ID
 export const getFreshFirebaseToken = async () => {
   try {
     const currentUser = auth.currentUser;
@@ -17,7 +17,7 @@ export const getFreshFirebaseToken = async () => {
       throw new Error("No authenticated user found");
     }
 
-    // Force refresh to get a fresh token
+    // Force refresh pour obtenir un nouveau token
     const token = await currentUser.getIdToken(true);
     console.log(
       "Fresh Firebase ID token obtained for API call:",
@@ -35,7 +35,7 @@ export const getFreshFirebaseToken = async () => {
   }
 };
 
-// Function to make authenticated API calls
+// Fonction pour faire des appels API authentifiés
 export const authenticatedApiCall = async (method, endpoint, data = null) => {
   try {
     const token = await getFreshFirebaseToken();
@@ -61,7 +61,7 @@ export const authenticatedApiCall = async (method, endpoint, data = null) => {
   }
 };
 
-// Specific API functions
+// Fonctions API spécifiques
 export const createOrUpdateUser = async () => {
   return await authenticatedApiCall("POST", "/user/create-or-update-user");
 };

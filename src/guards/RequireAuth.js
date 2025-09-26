@@ -1,43 +1,49 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { useUser } from "../contexts/userContext";
+import { useSelector, useDispatch } from "react-redux";
+import Loadable from "../routes/components/Loadable";
+import { fetchCurrentUser } from "../actions/authActions";
 
-const RequireAuth = ({ children, redirectTo = "/login" }) => {
-  const { user, profile, loading } = useUser();
+const RequireAuth = ({ children }) => {
+  const dispatch = useDispatch();
   const location = useLocation();
 
-  console.log("RequireAuth - Debug Info:");
-  console.log("  user:", user);
-  console.log("  profile:", profile);
-  console.log("  loading:", loading);
-  console.log("  current location:", location.pathname);
+  const { user, isAuthenticated, loading } = useSelector((state) => state.user);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  // ✅ Afficher un spinner pendant le chargement
-  if (loading) {
+  useEffect(() => {
+    const verifyUser = async () => {
+      if (!user || !isAuthenticated) {
+        const result = await dispatch(fetchCurrentUser());
+        if (!result.success) {
+          console.log("RequireAuth - Pas d'utilisateur trouvé");
+        }
+      }
+      setCheckingAuth(false); 
+    };
+
+    verifyUser();
+  }, [dispatch, user, isAuthenticated]);
+
+  if (loading || checkingAuth) {
     return (
       <div className="container mt-4">
         <div className="text-center">
-          <div className="spinner-border" role="status">
-            <span className="visually-hidden">Loading...</span>
-          </div>
-          <p className="mt-2">Checking authentication...</p>
+          <Loadable />
+          <p className="mt-2">Vérification de l'authentification...</p>
         </div>
       </div>
     );
   }
 
-  // ✅ Rediriger si pas d'utilisateur
-  if (!user) {
+  if (!isAuthenticated || !user) {
     console.log(
-      "RequireAuth - Pas d'utilisateur, redirection vers:",
-      redirectTo
+      "RequireAuth - Redirection vers /login car pas d'utilisateur authentifié"
     );
-    return (
-      <Navigate to={{ pathname: redirectTo, state: { from: location } }} />
-    );
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  console.log("RequireAuth - Utilisateur connecté, affichage du contenu");
+  console.log("RequireAuth - Utilisateur authentifié, affichage du contenu");
   return children;
 };
 

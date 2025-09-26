@@ -1,6 +1,6 @@
 import * as Yup from "yup";
 
-// 🔒 Définition du schéma de validation
+// Définition du schéma de validation pour la connexion avec librairie Yup
 export const validationSchema = Yup.object().shape({
   email: Yup.string().email("Email invalid").required("The email is required"),
   password: Yup.string()

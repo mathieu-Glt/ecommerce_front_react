@@ -19,7 +19,7 @@ function useSessionManager() {
     const lastActivity = sessionStorage.getItem("lastActivity");
 
     const now = Date.now();
-    const sessionTimeout = 2 * 60 * 1000; // 2 minutes
+    const sessionTimeout = 30 * 60 * 1000; // 30 minutes
     const timeSinceLastActivity = lastActivity
       ? now - parseInt(lastActivity)
       : 0;
