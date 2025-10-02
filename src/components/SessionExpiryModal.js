@@ -45,40 +45,40 @@ function SessionExpiryModal() {
     }
   }, [showWarning]);
 
-  const handleStayConnected = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("SessionExpiryModal - Bouton 'Restaurer la session' cliqué");
+  // const handleStayConnected = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   console.log("SessionExpiryModal - Bouton 'Restaurer la session' cliqué");
 
-    // ✅ Utiliser setTimeout pour éviter les conflits d'événements
-    setTimeout(() => {
-      refreshSession();
-      setCountdown(30);
-    }, 100);
-  };
+  //   // Utiliser setTimeout pour éviter les conflits d'événements
+  //   setTimeout(() => {
+  //     refreshSession();
+  //     setCountdown(30);
+  //   }, 100);
+  // };
 
-  const handleLogout = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    console.log("SessionExpiryModal - Bouton 'Se déconnecter' cliqué");
+  // const handleLogout = (e) => {
+  //   e.preventDefault();
+  //   e.stopPropagation();
+  //   console.log("SessionExpiryModal - Bouton 'Se déconnecter' cliqué");
 
-    // ✅ Utiliser setTimeout pour éviter les conflits d'événements
-    setTimeout(() => {
-      forceLogout();
-    }, 100);
-  };
+  //   // Utiliser setTimeout pour éviter les conflits d'événements
+  //   setTimeout(() => {
+  //     forceLogout();
+  //   }, 100);
+  // };
 
-  // ✅ Gestionnaires alternatifs pour les boutons
+  // Gestionnaires alternatifs pour les boutons
   const handleStayConnectedAlt = () => {
     console.log(
       "SessionExpiryModal - Bouton 'Restaurer la session' (alt) cliqué"
     );
 
-    // ✅ Appeler refreshSession et s'assurer que la modale se ferme
+    // Appeler refreshSession et s'assurer que la modale se ferme
     refreshSession();
     setCountdown(30);
 
-    // ✅ Forcer la fermeture de la modale après un délai
+    // Forcer la fermeture de la modale après un délai
     setTimeout(() => {
       console.log("SessionExpiryModal - Fermeture forcée de la modale");
       // La modale devrait se fermer automatiquement grâce à setShowWarning(false) dans refreshSession
@@ -115,7 +115,7 @@ function SessionExpiryModal() {
         <div className="modal-content">
           <div className="modal-header bg-warning">
             <h5 className="modal-title text-dark">
-              {sessionExpired ? "⏰ Session expired" : "⚠️ Session will expire"}
+              {sessionExpired ? "Session expired" : "Session will expire"}
             </h5>
             <button
               type="button"
@@ -207,7 +207,7 @@ function SessionExpiryModal() {
         </div>
       </div>
 
-      {/* ✅ SUPPRIMER le backdrop pour éviter les conflits de clics */}
+      {/* SUPPRIMER le backdrop pour éviter les conflits de clics */}
       {/* <div className="modal-backdrop fade show" style={{ zIndex: 9998 }}></div> */}
     </div>
   );

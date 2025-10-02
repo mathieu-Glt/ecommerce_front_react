@@ -15,7 +15,7 @@ export const loginWithEmailAction = (email, password) => async (dispatch) => {
   dispatch({ type: "LOGIN_START" });
   try {
     const response = await loginWithEmailAPI(email, password);
-    console.log("loginWithEmailAction response :", response); // Debug
+    console.log("loginWithEmailAction response :", response);
 
     // Gérer différentes structures de réponse possibles
     let userData, tokenData;
@@ -63,6 +63,7 @@ export const loginWithEmailAction = (email, password) => async (dispatch) => {
     socket.on("user:connected", {
       user: userData,
       token: tokenData,
+      refreshToken: refreshToken,
     });
 
     return { success: true, data: { user: userData, token: tokenData } };

@@ -16,28 +16,28 @@ function useToast() {
     draggable: true,
   };
 
-  // ✅ Succès
+  // ✅Succès
   const showSuccess = useCallback((message, config = {}) => {
     console.log("message in showSuccess :: ", message);
     toast.success(message, { ...defaultConfig, ...config });
   }, []);
 
-  // ❌ Erreur
+  // Erreur
   const showError = useCallback((message, config = {}) => {
     toast.error(message, { ...defaultConfig, ...config });
   }, []);
 
-  // ⚠️ Avertissement
+  //  Avertissement
   const showWarning = useCallback((message, config = {}) => {
     toast.warning(message, { ...defaultConfig, ...config });
   }, []);
 
-  // ℹ️ Information
+  // Information
   const showInfo = useCallback((message, config = {}) => {
     toast.info(message, { ...defaultConfig, ...config });
   }, []);
 
-  // 🔄 Toast de chargement (pour les actions longues)
+  // Toast de chargement (pour les actions longues)
   const showLoading = useCallback((message = "Loading...", config = {}) => {
     return toast.loading(message, {
       ...defaultConfig,
@@ -46,7 +46,7 @@ function useToast() {
     });
   }, []);
 
-  // ✅ Succès avec toast de chargement
+  // Succès avec toast de chargement
   const updateToSuccess = useCallback((toastId, message = "Success !") => {
     toast.update(toastId, {
       render: message,
@@ -56,7 +56,7 @@ function useToast() {
     });
   }, []);
 
-  // ❌ Erreur avec toast de chargement
+  // Erreur avec toast de chargement
   const updateToError = useCallback((toastId, message = "Error !") => {
     toast.update(toastId, {
       render: message,
@@ -66,17 +66,17 @@ function useToast() {
     });
   }, []);
 
-  // 🗑️ Fermer un toast spécifique
+  // Fermer un toast spécifique
   const dismissToast = useCallback((toastId) => {
     toast.dismiss(toastId);
   }, []);
 
-  // 🗑️ Fermer tous les toasts
+  // Fermer tous les toasts
   const dismissAll = useCallback(() => {
     toast.dismiss();
   }, []);
 
-  // 🎯 Messages prédéfinis pour l'authentification
+  // Messages prédéfinis pour l'authentification
   const authMessages = {
     loginSuccess: (user) => `Welcome back ${user?.firstname || "User"} !`,
     loginError: "Login failed",
@@ -95,7 +95,7 @@ function useToast() {
     profileUpdateError: "Profile update failed",
   };
 
-  // 🎯 Messages prédéfinis pour les opérations CRUD
+  // Messages prédéfinis pour les opérations CRUD
   const crudMessages = {
     createSuccess: (itemName) => `${itemName} created successfully`,
     createError: (itemName) => `Failed to create ${itemName}`,
@@ -107,7 +107,7 @@ function useToast() {
     fetchError: (itemName) => `Failed to load ${itemName}`,
   };
 
-  // 🎯 Messages prédéfinis pour la validation
+  // Messages prédéfinis pour la validation
   const validationMessages = {
     requiredField: (fieldName) => `${fieldName} is required`,
     invalidEmail: "Please enter a valid email address",
@@ -116,7 +116,7 @@ function useToast() {
     invalidFormat: (fieldName) => `Invalid ${fieldName} format`,
   };
 
-  // 🎯 Messages prédéfinis pour les erreurs réseau
+  //  Messages prédéfinis pour les erreurs réseau
   const networkMessages = {
     connectionError: "Connection error. Please check your internet connection.",
     serverError: "Server error. Please try again later.",

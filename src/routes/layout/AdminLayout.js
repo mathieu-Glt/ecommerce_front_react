@@ -8,8 +8,6 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Logout from "../../components/Logout/Logout";
-import { useSelector } from "react-redux";
-import { currentUser } from "../../api/auth";
 import useLocalStorage from "../../hooks/useLocalStorage";
 
 const adminId =
@@ -45,7 +43,7 @@ function AdminLayout() {
       icon: <LogoutOutlined />,
       component: <Logout />,
     },
-    // ✅ Condition d’affichage avec includes
+    // Condition d’affichage avec includes
     ...(user?.uid === adminId
       ? [
           {

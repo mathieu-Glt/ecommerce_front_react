@@ -11,7 +11,6 @@ import {
   ShoppingCartOutlined,
 } from "@ant-design/icons";
 import Navigation from "../Navigation/Navigation";
-import NavigationCustom from "../Navigation/NavigationCustom";
 import { Link } from "react-router-dom";
 import { useUser } from "../../contexts/userContext";
 import Logout from "../Logout/Logout";
@@ -159,8 +158,8 @@ function Header() {
 
   return (
     <div>
-      {/* ✅ Utiliser la navigation personnalisée au lieu d'Ant Design */}
-      <NavigationCustom
+      {/* Utiliser la navigation personnalisée au lieu d'Ant Design */}
+      <Navigation
         paths={paths}
         authenticatedUser={authenticatedUser}
         user={user}
@@ -168,7 +167,7 @@ function Header() {
         currentUrl={currentUrl}
       />
 
-      {/* ❌ Ancienne navigation Ant Design (commentée) */}
+      {/* Ancienne navigation Ant Design (commentée) */}
       {/* <Navigation
         handleClick={handleClick}
         currentUrl={currentUrl}

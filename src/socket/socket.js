@@ -34,11 +34,11 @@ export const connectSocket = (options = {}) => {
     });
 
     socket.on("connect_error", (error) => {
-      console.error("❌ Erreur connexion socket:", error);
+      console.error("Erreur connexion socket:", error);
     });
 
     socket.on("reconnect", (attemptNumber) => {
-      console.log("🔄 Socket reconnecté après", attemptNumber, "tentatives");
+      console.log("Socket reconnecté après", attemptNumber, "tentatives");
     });
   }
 
@@ -48,7 +48,7 @@ export const connectSocket = (options = {}) => {
 
 export const getSocket = () => {
   if (!socket) {
-    console.warn("⚠️ Socket non initialisé, création automatique...");
+    console.warn("Socket non initialisé, création automatique...");
     return connectSocket();
   }
   return socket;

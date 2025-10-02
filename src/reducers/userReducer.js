@@ -14,7 +14,7 @@ const initialState = {
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    // 🔐 LOGIN
+    // LOGIN
     case "LOGIN_START":
       return { ...state, loading: true, error: null };
 
@@ -38,7 +38,7 @@ export const userReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
-    // 📝 REGISTER
+    // REGISTER
     case "REGISTER_START":
       return { ...state, loading: true, error: null };
 
@@ -62,7 +62,7 @@ export const userReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
-    // 👤 GET CURRENT USER
+    // GET CURRENT USER
     case "GET_CURRENT_USER_START":
       return { ...state, loading: true, error: null };
 
@@ -70,7 +70,7 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         user: action.payload.user,
-        token: action.payload.token || state.token, // ✅ fix ici
+        token: action.payload.token || state.token,
         isAuthenticated: true,
         loading: false,
         error: null,
@@ -86,7 +86,7 @@ export const userReducer = (state = initialState, action) => {
         error: action.payload,
       };
 
-    // 🔄 UPDATE PROFILE
+    // UPDATE PROFILE
     case "UPDATE_PROFILE_START":
       return { ...state, loading: true, error: null };
 
@@ -101,7 +101,7 @@ export const userReducer = (state = initialState, action) => {
     case "UPDATE_PROFILE_ERROR":
       return { ...state, loading: false, error: action.payload };
 
-    // 📦 LEGACY COMPAT
+    // LEGACY COMPAT
     case "LOGGED_IN_USER":
       return {
         ...state,
@@ -124,7 +124,7 @@ export const userReducer = (state = initialState, action) => {
     case "REGISTER_USER_ERROR":
       return { ...state, error: action.payload, loading: false };
 
-    // 🚪 LOGOUT
+    // LOGOUT
     case "LOGOUT":
       return {
         ...state,
@@ -135,7 +135,7 @@ export const userReducer = (state = initialState, action) => {
         error: null,
       };
 
-    // ❌ CLEAR ERRORS
+    // CLEAR ERRORS
     case "CLEAR_AUTH_ERRORS":
       return { ...state, error: null };
 

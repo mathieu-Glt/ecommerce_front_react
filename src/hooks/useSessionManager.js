@@ -33,7 +33,7 @@ function useSessionManager() {
     console.log("  user:", user ? "Présent" : "Absent");
     console.log("  token:", token ? "Présent" : "Absent");
 
-    // ✅ CORRECTION: Ne pas afficher la popup si l'utilisateur vient de se connecter
+    // Ne pas afficher la popup si l'utilisateur vient de se connecter
     // Si pas de session mais qu'on a un user/token, synchroniser automatiquement
     if ((!sessionUser || !sessionToken) && (user || token)) {
       console.log(
@@ -76,7 +76,7 @@ function useSessionManager() {
   const updateActivity = useCallback(() => {
     if (user || token) {
       sessionStorage.setItem("lastActivity", Date.now().toString());
-      // ✅ Ne pas fermer automatiquement la popup avec l'activité
+      // Ne pas fermer automatiquement la popup avec l'activité
       // setSessionExpired(false);
       // setShowWarning(false);
     }
@@ -86,22 +86,22 @@ function useSessionManager() {
   const refreshSession = useCallback(() => {
     console.log("useSessionManager - Rafraîchissement de session...");
 
-    // ✅ Utiliser les valeurs actuelles de sessionStorage ou localStorage
+    // Utiliser les valeurs actuelles de sessionStorage ou localStorage
     const currentUser =
       user || JSON.parse(sessionStorage.getItem("user") || "null");
     const currentToken = token || sessionStorage.getItem("token");
 
     if (currentUser && currentToken) {
-      // ✅ Synchroniser sessionStorage avec localStorage
+      // Synchroniser sessionStorage avec localStorage
       sessionStorage.setItem("user", JSON.stringify(currentUser));
       sessionStorage.setItem("token", currentToken);
       sessionStorage.setItem("lastActivity", Date.now().toString());
 
-      // ✅ S'assurer que localStorage est à jour
+      // S'assurer que localStorage est à jour
       localStorage.setItem("user", JSON.stringify(currentUser));
       localStorage.setItem("token", currentToken);
 
-      // ✅ Réinitialiser les états
+      // Réinitialiser les états
       setSessionExpired(false);
       setShowWarning(false);
 
@@ -110,7 +110,7 @@ function useSessionManager() {
       console.log(
         "useSessionManager - Impossible de rafraîchir la session (user ou token manquant)"
       );
-      // ✅ Si pas de données valides, déconnecter directement
+      // Si pas de données valides, déconnecter directement
       try {
         sessionStorage.clear();
         localStorage.removeItem("user");
@@ -134,24 +134,24 @@ function useSessionManager() {
     console.log("useSessionManager - Déconnexion complète en cours...");
 
     try {
-      // ✅ Supprimer sessionStorage
+      // Supprimer sessionStorage
       sessionStorage.clear();
       console.log("useSessionManager - sessionStorage supprimé");
 
-      // ✅ Supprimer localStorage
+      // Supprimer localStorage
       localStorage.removeItem("user");
       localStorage.removeItem("token");
       localStorage.removeItem("lastActivity");
       console.log("useSessionManager - localStorage supprimé");
 
-      // ✅ Réinitialiser les états
+      // Réinitialiser les états
       setSessionExpired(false);
       setShowWarning(false);
 
-      // ✅ Appeler la fonction de déconnexion du contexte
+      // Appeler la fonction de déconnexion du contexte
       logout();
 
-      // ✅ Rediriger vers login
+      // Rediriger vers login
       window.location.href = "/login";
 
       console.log("useSessionManager - Déconnexion complète terminée");
@@ -166,7 +166,6 @@ function useSessionManager() {
   // Écouter les événements d'activité utilisateur
   useEffect(() => {
     const handleUserActivity = (event) => {
-      // ✅ CORRECTION: Ne pas mettre à jour l'activité si on clique sur la modale
       const modal = document.querySelector(".modal.show");
       if (modal && modal.contains(event.target)) {
         console.log(
@@ -177,7 +176,7 @@ function useSessionManager() {
       updateActivity();
     };
 
-    // ✅ DÉSACTIVER complètement les événements d'activité quand la modale est affichée
+    // DÉSACTIVER complètement les événements d'activité quand la modale est affichée
     if (showWarning) {
       console.log(
         "useSessionManager - Modale affichée, événements d'activité désactivés"
@@ -185,7 +184,7 @@ function useSessionManager() {
       return;
     }
 
-    // ✅ Événements moins sensibles pour éviter de fermer la popup par accident
+    // Événements moins sensibles pour éviter de fermer la popup par accident
     const events = [
       "click", // Clics explicites
       "keypress", // Frappe clavier
@@ -201,7 +200,7 @@ function useSessionManager() {
         document.removeEventListener(event, handleUserActivity, true);
       });
     };
-  }, [updateActivity, showWarning]); // ✅ Ajouter showWarning comme dépendance
+  }, [updateActivity, showWarning]); // Ajouter showWarning comme dépendance
 
   // Vérifier la session régulièrement
   useEffect(() => {

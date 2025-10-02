@@ -1,7 +1,7 @@
 // src/routes/index.js
 import { Routes, Route } from "react-router-dom";
 import { lazy } from "react";
-import Loadable from "./components/Loadable"; // corrige le chemin si besoin
+import Loadable from "./components/Loadable"; // SPINNER AU CHARGEMENT COMPOSANT
 import SessionTest from "../components/SessionTest";
 // Guards
 import RequireAuth from "../guards/RequireAuth";

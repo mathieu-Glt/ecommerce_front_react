@@ -14,7 +14,8 @@ const RequireRoleAdmin = ({ redirectTo = "/login" }) => {
     return (
       <div className="container mt-4 text-center">
         <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
+          <span className="visually-hidden">Loading...</span>{" "}
+          {/* UTILISER LE SPINNER lOADER */}
         </div>
         <p className="mt-2">Checking permissions...</p>
       </div>
@@ -36,7 +37,7 @@ const RequireRoleAdmin = ({ redirectTo = "/login" }) => {
     return (
       <div className="container mt-4">
         <div className="alert alert-warning">
-          ⚠️ Access denied: You must have the "admin" role to access this page.
+          Access denied: You must have the "admin" role to access this page.
           <br />
           <strong>Your current role:</strong> {userRole}
         </div>
@@ -57,8 +58,7 @@ const RequireRoleAdmin = ({ redirectTo = "/login" }) => {
       </div>
     );
   }
-
-  console.log("RequireRoleAdmin - Access granted with admin role");
+  // Rôle admin confirmé
   return <Outlet />;
 };
 

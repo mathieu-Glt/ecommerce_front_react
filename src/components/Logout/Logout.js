@@ -3,9 +3,11 @@ import { useUser } from "../../contexts/userContext";
 import { useDispatch, useSelector } from "react-redux";
 import useToast from "../../hooks/useToast";
 import { clearAuthData } from "../../utils/auth";
+import useAuth from "../../hooks/useAuth";
 
 const Logout = () => {
-  const { logout, user, userLocalStorage } = useUser();
+  const { user, userLocalStorage } = useUser();
+  const { logout } = useAuth();
   const dispatch = useDispatch();
   const reduxState = useSelector((state) => state);
   const reduxUser = reduxState?.user?.user;
