@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import GoogleLoginButton from "./GoogleLoginButton";
 import AzureLoginButton from "./AzureLoginButton";
+import { validationLoginSchema } from "../../validator/validationLogin";
 
 const LoginForm = ({
   onSubmit,
@@ -18,19 +19,35 @@ const LoginForm = ({
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
-    const validationErrors = {};
-    if (!formData.email) validationErrors.email = "Email is required";
-    if (!/\S+@\S+\.\S+/.test(formData.email))
-      validationErrors.email = "Enter a valid email";
-    if (!formData.password) validationErrors.password = "Password is required";
+    // const validationErrors = {};
+    // if (!formData.email) validationErrors.email = "Email is required";
+    // if (!/\S+@\S+\.\S+/.test(formData.email))
+    //   validationErrors.email = "Enter a valid email";
+    // if (!formData.password) validationErrors.password = "Password is required";
 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+    // if (Object.keys(validationErrors).length > 0) {
+    //   setErrors(validationErrors);
+    //   return;
+    // }
+
+    try {
+      await validationLoginSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+
+      await onSubmit(formData);
+      navigate("/");
+    } catch (error) {
+      if (!error.inner) return;
+      const validationError = error;
+      console.log("Validation errors:", validationError);
+      // Formater les erreurs pour un accès facile
+      const formattedErrors = {};
+      error.inner.forEach((err) => {
+        formattedErrors[err.path] = err.message;
+      });
+      setErrors(formattedErrors);
       return;
     }
-
-    await onSubmit(formData);
-    navigate("/");
   };
 
   const handleFieldChange = (field, value) => {
@@ -58,6 +75,7 @@ const LoginForm = ({
               placeholder="Enter your email"
               disabled={loading}
             />
+            {errors.email && <span className="error">{errors.email}</span>}
           </div>
 
           <div className="form-group">
@@ -69,6 +87,9 @@ const LoginForm = ({
               placeholder="Enter your password"
               disabled={loading}
             />
+            {errors.password && (
+              <span className="error">{errors.password}</span>
+            )}
           </div>
 
           <button type="submit" disabled={loading}>

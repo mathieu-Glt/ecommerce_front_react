@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import RegisterForm from "../../components/auth/RegisterForm";
 import useAuth from "../../hooks/useAuth";
+import { validationRegisterSchema } from "../../validator/validationRegister";
 
 const Register = ({ redirectTo = "/" }) => {
-  const { loading, error, register } = useAuth();
+  const { loading, register } = useAuth();
 
   const [formData, setFormData] = useState({
     firstname: "",
@@ -18,7 +19,7 @@ const Register = ({ redirectTo = "/" }) => {
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
 
-  // Fonction pour convertir un fichier en Base64
+  // Convertir un fichier en Base64
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -28,133 +29,61 @@ const Register = ({ redirectTo = "/" }) => {
     });
   };
 
-  // Validation en temps réel
-  const validateField = (field, value) => {
-    const errors = {};
-
-    switch (field) {
-      case "email":
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(value)) {
-          errors.email = "Format d'email invalide";
-        }
-        break;
-
-      case "password":
-        if (value.length < 8) {
-          errors.password =
-            "Le mot de passe doit contenir au moins 8 caractères";
-        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
-          errors.password =
-            "Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre";
-        }
-        break;
-
-      case "confirmPassword":
-        if (value !== formData.password) {
-          errors.confirmPassword = "Les mots de passe ne correspondent pas";
-        }
-        break;
-
-      case "firstname":
-      case "lastname":
-        if (value.length < 2) {
-          errors[field] = `Le ${
-            field === "firstname" ? "prénom" : "nom"
-          } doit contenir au moins 2 caractères`;
-        }
-        break;
-
-      case "address":
-        if (value.length < 5) {
-          errors.address = "L'adresse doit contenir au moins 5 caractères";
-        }
-        break;
-
-      default:
-        break;
-    }
-
-    return errors;
-  };
-
-  // Gestionnaire de soumission du formulaire
+  // Soumission avec validation Yup
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation côté client
-    if (formData.password !== formData.confirmPassword) {
-      setErrors({ confirmPassword: "Les mots de passe ne correspondent pas" });
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      setErrors({
-        password: "Le mot de passe doit contenir au moins 8 caractères",
-      });
-      return;
-    }
-
-    const validationErrors = {};
-    Object.keys(formData).forEach((field) => {
-      if (field !== "picture" && field !== "confirmPassword") {
-        const fieldErrors = validateField(field, formData[field]);
-        Object.assign(validationErrors, fieldErrors);
-      }
-    });
-
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
-
-    // Convertir l'image en Base64 si elle existe
-    let pictureBase64 = null;
-    if (formData.picture) {
-      try {
-        pictureBase64 = await convertFileToBase64(formData.picture);
-      } catch (err) {
-        setErrors({ picture: "Erreur lors de la conversion de l'image" });
-        return;
-      }
-    }
-
-    // Préparer les données pour l'inscription
-    const registerData = {
-      firstname: formData.firstname,
-      lastname: formData.lastname,
-      email: formData.email,
-      password: formData.password,
-      address: formData.address,
-      picture: pictureBase64,
-    };
-
     try {
+      // Validation avec Yup
+      await validationRegisterSchema.validate(formData, { abortEarly: false });
+
+      // Convertir l'image si elle existe
+      let pictureBase64 = null;
+      if (formData.picture) {
+        pictureBase64 = await convertFileToBase64(formData.picture);
+      }
+
+      const registerData = {
+        firstname: formData.firstname,
+        lastname: formData.lastname,
+        email: formData.email,
+        password: formData.password,
+        address: formData.address,
+        picture: pictureBase64,
+      };
+
       await register(registerData, redirectTo);
     } catch (err) {
-      console.error("Erreur d'inscription:", err);
+      if (err.inner) {
+        // Récupérer toutes les erreurs Yup
+        const formErrors = {};
+        err.inner.forEach((error) => {
+          formErrors[error.path] = error.message;
+        });
+        setErrors(formErrors);
+      }
     }
   };
 
-  // Gestionnaire de changement de champ
+  // Gestion changement champ avec nettoyage des erreurs
   const handleFieldChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }));
 
-    const fieldErrors = validateField(field, value);
-    setErrors((prev) => ({
-      ...prev,
-      [field]: fieldErrors[field],
-    }));
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: null,
+      }));
+    }
   };
 
-  // Gestionnaire de changement d'image
+  // Validation fichier image (hors Yup car spécifique)
   const handleImageInputChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validation du fichier
       const allowedTypes = [
         "image/jpeg",
         "image/jpg",
