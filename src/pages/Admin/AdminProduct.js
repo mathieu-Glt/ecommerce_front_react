@@ -15,6 +15,7 @@ import {
   getThumbnailUrl,
   isCloudinaryImage,
 } from "../../utils/cloudinaryUtils";
+import { validationProductSchema } from "../../validator/validationCreateProduct";
 
 // Fonction pour récupérer le token de session
 const getSessionToken = () => {
@@ -49,6 +50,7 @@ const AdminProduct = () => {
   const [subs, setSubs] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [errors, setErrors] = useState({});
 
   // Charger les données
   useEffect(() => {
@@ -101,7 +103,7 @@ const AdminProduct = () => {
         console.log(
           "Parent est un objet:",
           typeof subsData[0].parent === "object"
-        )
+        );
         console.log("Toutes les sous-catégories:", subsData);
       } else {
         console.log("Aucune sous-catégorie récupérée depuis l'API");
@@ -146,6 +148,13 @@ const AdminProduct = () => {
     );
 
     try {
+      await validationProductSchema.validate(formData, { abortEarly: false });
+      setErrors({});
+
+      console.log(
+        editingProduct ? "Updating product..." : "Creating product..."
+      );
+      console.log("Form data to submit:", formData);
       // Préparer les données pour l'envoi
       const submitData = new FormData();
 
@@ -228,12 +237,18 @@ const AdminProduct = () => {
       setEditingProduct(null);
       await loadData(); // Attendre que loadData se termine
     } catch (error) {
-      // Afficher le message d'erreur spécifique du serveur
-      const errorMessage =
-        error.response?.data?.message ||
-        (editingProduct ? "Error updating" : "Error creating");
-      updateToError(loadingToast, errorMessage);
-      console.error("Error submitting form:", error);
+      if (!error.inner) return;
+      console.error("Unexpected error:", error);
+      updateToError(loadingToast, "An unexpected error occurred");
+      const validationError = error;
+      console.log("Validation errors:", validationError);
+      // Formater les erreurs pour un accès facile
+      const formattedErrors = {};
+      error.inner.forEach((err) => {
+        formattedErrors[err.path] = err.message;
+      });
+      setErrors(formattedErrors);
+      return;
     }
   };
 
@@ -284,6 +299,7 @@ const AdminProduct = () => {
 
       {/* Formulaire */}
       <ProductForm
+        errors={errors}
         onSubmit={handleFormSubmit}
         onCancel={handleCancelEdit}
         initialData={editingProduct}

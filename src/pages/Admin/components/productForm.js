@@ -9,6 +9,7 @@ import CloudinaryStats from "../../../components/CloudinaryStats";
 const ProductForm = ({
   onSubmit,
   onCancel,
+  errors = {},
   initialData = null,
   categories = [],
   subs = [],
@@ -31,7 +32,6 @@ const ProductForm = ({
   const [availableSubs, setAvailableSubs] = useState([]);
   const [imageFiles, setImageFiles] = useState([]);
   const [imagePreview, setImagePreview] = useState([]);
-  const [errors, setErrors] = useState({});
 
   // Initialiser le formulaire avec les données existantes (pour l'édition)
   useEffect(() => {
@@ -107,69 +107,69 @@ const ProductForm = ({
   };
 
   // Validation des champs
-  const validateField = (field, value) => {
-    const newErrors = { ...errors };
+  // const validateField = (field, value) => {
+  //   const newErrors = { ...errors };
 
-    switch (field) {
-      case "title":
-        if (!value.trim()) {
-          newErrors.title = "The title is required";
-        } else if (value.length < 3) {
-          newErrors.title = "The title must contain at least 3 characters";
-        } else if (value.length > 32) {
-          newErrors.title = "The title cannot exceed 32 characters";
-        } else {
-          delete newErrors.title;
-        }
-        break;
+  //   switch (field) {
+  //     case "title":
+  //       if (!value.trim()) {
+  //         newErrors.title = "The title is required";
+  //       } else if (value.length < 3) {
+  //         newErrors.title = "The title must contain at least 3 characters";
+  //       } else if (value.length > 32) {
+  //         newErrors.title = "The title cannot exceed 32 characters";
+  //       } else {
+  //         delete newErrors.title;
+  //       }
+  //       break;
 
-      case "price":
-        if (!value) {
-          newErrors.price = "The price is required";
-        } else if (isNaN(value) || parseFloat(value) <= 0) {
-          newErrors.price = "The price must be a positive number";
-        } else {
-          delete newErrors.price;
-        }
-        break;
+  //     case "price":
+  //       if (!value) {
+  //         newErrors.price = "The price is required";
+  //       } else if (isNaN(value) || parseFloat(value) <= 0) {
+  //         newErrors.price = "The price must be a positive number";
+  //       } else {
+  //         delete newErrors.price;
+  //       }
+  //       break;
 
-      case "description":
-        if (!value.trim()) {
-          newErrors.description = "The description is required";
-        } else if (value.length < 10) {
-          newErrors.description =
-            "The description must contain at least 10 characters";
-        } else if (value.length > 2000) {
-          newErrors.description =
-            "The description cannot exceed 2000 characters";
-        } else {
-          delete newErrors.description;
-        }
-        break;
+  //     case "description":
+  //       if (!value.trim()) {
+  //         newErrors.description = "The description is required";
+  //       } else if (value.length < 10) {
+  //         newErrors.description =
+  //           "The description must contain at least 10 characters";
+  //       } else if (value.length > 2000) {
+  //         newErrors.description =
+  //           "The description cannot exceed 2000 characters";
+  //       } else {
+  //         delete newErrors.description;
+  //       }
+  //       break;
 
-      case "category":
-        if (!value) {
-          newErrors.category = "The category is required";
-        } else {
-          delete newErrors.category;
-        }
-        break;
+  //     case "category":
+  //       if (!value) {
+  //         newErrors.category = "The category is required";
+  //       } else {
+  //         delete newErrors.category;
+  //       }
+  //       break;
 
-      case "sub":
-        if (!value) {
-          newErrors.sub = "The subcategory is required";
-        } else {
-          delete newErrors.sub;
-        }
-        break;
+  //     case "sub":
+  //       if (!value) {
+  //         newErrors.sub = "The subcategory is required";
+  //       } else {
+  //         delete newErrors.sub;
+  //       }
+  //       break;
 
-      default:
-        break;
-    }
+  //     default:
+  //       break;
+  //   }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+  //   setErrors(newErrors);
+  //   return Object.keys(newErrors).length === 0;
+  // };
 
   // Gestionnaire de changement de champ
   const handleFieldChange = (field, value) => {
@@ -188,7 +188,7 @@ const ProductForm = ({
     }
 
     // Valider le champ
-    validateField(field, value);
+    // validateField(field, value);
   };
 
   // Gestionnaire pour les images
@@ -236,11 +236,11 @@ const ProductForm = ({
     ];
     let isValid = true;
 
-    fieldsToValidate.forEach((field) => {
-      if (!validateField(field, formData[field])) {
-        isValid = false;
-      }
-    });
+    // fieldsToValidate.forEach((field) => {
+    //   if (!validateField(field, formData[field])) {
+    //     isValid = false;
+    //   }
+    // });
 
     return isValid;
   };
@@ -281,13 +281,12 @@ const ProductForm = ({
     });
     setImageFiles([]);
     setImagePreview([]);
-    setErrors({});
     if (onCancel) {
       onCancel();
     }
   };
 
-  const hasErrors = Object.keys(errors).length > 0;
+  // const hasErrors = Object.keys(errors).length > 0;
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-8 mb-8 border border-gray-100">
@@ -365,9 +364,11 @@ const ProductForm = ({
                 required
                 disabled={loading}
               />
-              <p className="text-xs text-gray-500 mt-1">
-                The slug is generated automatically from the title
-              </p>
+              {errors.slug && (
+                <p className="text-xs text-gray-500 mt-1">
+                  The slug is generated automatically from the title
+                </p>
+              )}
             </div>
           </div>
 
@@ -413,6 +414,9 @@ const ProductForm = ({
                 placeholder="10"
                 disabled={loading}
               />
+              {errors.quantity && (
+                <p className="text-red-500 text-sm mt-1">{errors.quantity}</p>
+              )}
             </div>
           </div>
 
