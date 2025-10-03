@@ -3,10 +3,10 @@ import { privateApi, publicApi } from "./config/api";
 export const getSubs = async () => {
   try {
     const response = await publicApi.get(`/sub/subs`);
-    console.log("✅ Réponse getSubs:", response);
+    console.log("Réponse getSubs:", response);
     return response; // L'intercepteur retourne déjà response.data
   } catch (error) {
-    console.error("❌ Erreur getSubs:", error.response?.data || error.message);
+    console.error("Erreur getSubs:", error.response?.data || error.message);
     throw error;
   }
 };

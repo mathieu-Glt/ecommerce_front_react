@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
-  // ✅ Récupérer le nom de l'utilisateur depuis redux
+  // Récupérer le nom de l'utilisateur depuis redux
   const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
   console.log("user in Home :: ", user);

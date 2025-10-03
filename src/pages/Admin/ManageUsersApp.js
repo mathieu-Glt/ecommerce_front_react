@@ -27,7 +27,7 @@ function ManageUsersApp() {
 
   const { token } = getAuthData();
 
-  console.log("🔍 État des utilisateurs:", {
+  console.log(" État des utilisateurs:", {
     users,
     loading,
     error,

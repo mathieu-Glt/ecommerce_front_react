@@ -1,28 +1,25 @@
 import { privateApi } from "./config/api";
 
 export const getUsers = async () => {
-  console.log("🔍 Appel API getUsers");
+  console.log("Appel API getUsers");
   try {
     const response = await privateApi.get(`/user/users`);
-    console.log("✅ Réponse getUsers:", response);
+    console.log("Réponse getUsers:", response);
     return response;
   } catch (error) {
-    console.error("❌ Erreur getUsers:", error.response?.data || error.message);
+    console.error("Erreur getUsers:", error.response?.data || error.message);
     throw error;
   }
 };
 
 export const getUserById = async (id) => {
-  console.log("🔍 Appel API getUserById avec ID:", id);
+  console.log("Appel API getUserById avec ID:", id);
   try {
     const response = await privateApi.get(`/user/users/${id}`);
-    console.log("✅ Réponse getUserById:", response);
+    console.log("Réponse getUserById:", response);
     return response;
   } catch (error) {
-    console.error(
-      "❌ Erreur getUserById:",
-      error.response?.data || error.message
-    );
+    console.error("Erreur getUserById:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -30,11 +27,11 @@ export const getUserById = async (id) => {
 export const getUsersByEmail = async (email) => {
   try {
     const response = await privateApi.get(`/user/user/${email}`);
-    console.log("✅ Réponse getUsersByEmail:", response);
+    console.log("Réponse getUsersByEmail:", response);
     return response;
   } catch (error) {
     console.error(
-      "❌ Erreur getUsersByEmail:",
+      "Erreur getUsersByEmail:",
       error.response?.data || error.message
     );
     throw error;
@@ -44,13 +41,10 @@ export const getUsersByEmail = async (email) => {
 export const updateUser = async (id, userData) => {
   try {
     const response = await privateApi.put(`/user/user/${id}`, userData);
-    console.log("✅ Réponse updateUser:", response);
+    console.log("Réponse updateUser:", response);
     return response;
   } catch (error) {
-    console.error(
-      "❌ Erreur updateUser:",
-      error.response?.data || error.message
-    );
+    console.error("Erreur updateUser:", error.response?.data || error.message);
     throw error;
   }
 };
@@ -58,13 +52,10 @@ export const updateUser = async (id, userData) => {
 export const deleteUser = async (id) => {
   try {
     const response = await privateApi.delete(`/user/user/${id}`);
-    console.log("✅ Réponse deleteUser:", response);
+    console.log("Réponse deleteUser:", response);
     return response;
   } catch (error) {
-    console.error(
-      "❌ Erreur deleteUser:",
-      error.response?.data || error.message
-    );
+    console.error("Erreur deleteUser:", error.response?.data || error.message);
     throw error;
   }
 };

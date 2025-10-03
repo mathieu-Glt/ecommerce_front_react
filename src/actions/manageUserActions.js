@@ -9,13 +9,8 @@ export const fetchUsers = (token) => async (dispatch) => {
   dispatch({ type: "FETCH_USERS_START" });
   try {
     const data = await getUsers(token);
-    console.log("🔍 Données reçues dans fetchUsers:", data);
-    console.log("📊 Type de données:", typeof data);
-    console.log("📊 Est un tableau:", Array.isArray(data));
     dispatch({ type: "FETCH_USERS_SUCCESS", payload: data });
-    console.log("✅ Action FETCH_USERS_SUCCESS dispatchée");
   } catch (err) {
-    console.error("❌ Erreur dans fetchUsers:", err);
     dispatch({ type: "FETCH_USERS_ERROR", payload: err.message });
   }
 };

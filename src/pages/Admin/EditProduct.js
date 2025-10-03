@@ -33,8 +33,8 @@ const EditProduct = () => {
   const loadData = async () => {
     try {
       setLoading(true);
-      console.log("🔍 Chargement des données avec ID:", productId);
-      console.log("🔑 Token:", token ? "Présent" : "Manquant");
+      console.log("Chargement des données avec ID:", productId);
+      console.log("Token:", token ? "Présent" : "Manquant");
 
       // Charger le produit, les catégories et sous-catégories en parallèle
       const [productData, categoriesData, subsData] = await Promise.all([
@@ -43,16 +43,16 @@ const EditProduct = () => {
         getSubs(token),
       ]);
 
-      console.log("✅ Produit récupéré:", productData);
-      console.log("✅ Catégories récupérées:", categoriesData);
-      console.log("✅ Sous-catégories récupérées:", subsData);
+      console.log("Produit récupéré:", productData);
+      console.log("Catégories récupérées:", categoriesData);
+      console.log("Sous-catégories récupérées:", subsData);
 
       setProduct(productData);
       setCategories(categoriesData || []);
       setSubs(subsData || []);
     } catch (error) {
-      console.error("❌ Erreur lors du chargement des données:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error(" Erreur lors du chargement des données:", error);
+      console.error(" Détails de l'erreur:", error.response?.data);
       showError("Erreur lors du chargement des données");
       navigate("/admin/products");
     } finally {
@@ -63,16 +63,16 @@ const EditProduct = () => {
   const handleProductUpdated = async (updatedData) => {
     try {
       setSubmitting(true);
-      console.log("🔍 Mise à jour du produit avec ID:", productId);
-      console.log("📝 Données à mettre à jour:", updatedData);
+      console.log(" Mise à jour du produit avec ID:", productId);
+      console.log(" Données à mettre à jour:", updatedData);
 
       await updateProduct(productId, updatedData, token);
 
       showSuccess("Produit mis à jour avec succès");
       navigate("/admin/products");
     } catch (error) {
-      console.error("❌ Erreur lors de la mise à jour:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error(" Erreur lors de la mise à jour:", error);
+      console.error(" Détails de l'erreur:", error.response?.data);
       showError("Erreur lors de la mise à jour du produit");
     } finally {
       setSubmitting(false);

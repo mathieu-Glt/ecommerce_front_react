@@ -33,14 +33,14 @@ const AdminProduct = () => {
     dismissAll,
   } = useToast();
 
-  console.log("👤 User connected:", user);
-  console.log("🔑 Session token present:", !!sessionToken);
+  console.log("User connected:", user);
+  console.log("ession token present:", !!sessionToken);
   console.log(
-    "🔑 Session token value:",
+    "Session token value:",
     sessionToken ? sessionToken.substring(0, 20) + "..." : "No token"
   );
   console.log(
-    "🔍 État Redux complet:",
+    "État Redux complet:",
     useSelector((state) => state)
   );
 
@@ -53,17 +53,17 @@ const AdminProduct = () => {
   // Charger les données
   useEffect(() => {
     if (sessionToken) {
-      console.log("🚀 useEffect triggered - data loading");
+      console.log(" useEffect triggered - data loading");
       loadData();
     }
   }, [sessionToken]);
 
   const loadData = async () => {
-    console.log("🔄 Data loading started");
+    console.log(" Data loading started");
     setLoading(true);
     try {
       console.log(
-        "🔍 Data loading with token:",
+        " Data loading with token:",
         sessionToken ? "Token present" : "Token missing"
       );
 
@@ -73,9 +73,9 @@ const AdminProduct = () => {
         getProducts(sessionToken),
       ]);
 
-      console.log("📊 Categories response:", categoriesRes);
-      console.log("📊 Subcategories response:", subsRes);
-      console.log("📊 Products response:", productsRes);
+      console.log("Categories response:", categoriesRes);
+      console.log("Subcategories response:", subsRes);
+      console.log("Products response:", productsRes);
 
       // Debug détaillé des sous-catégories
       console.log("🔍 Debug subsRes:", {
@@ -90,37 +90,37 @@ const AdminProduct = () => {
       const subsData = subsRes || [];
       const productsData = productsRes || [];
 
-      console.log("📋 Categories to set:", categoriesData);
-      console.log("📋 Subcategories to set:", subsData);
-      console.log("📋 Products to set:", productsData);
+      console.log(" Categories to set:", categoriesData);
+      console.log(" Subcategories to set:", subsData);
+      console.log(" Products to set:", productsData);
 
       // Debug: Vérifier la structure des sous-catégories
       if (subsData.length > 0) {
-        console.log("🔍 Structure de la première sous-catégorie:", subsData[0]);
-        console.log("🔍 Type de parent:", typeof subsData[0].parent);
+        console.log("Structure de la première sous-catégorie:", subsData[0]);
+        console.log("Type de parent:", typeof subsData[0].parent);
         console.log(
-          "🔍 Parent est un objet:",
+          "Parent est un objet:",
           typeof subsData[0].parent === "object"
-        );
-        console.log("🔍 Toutes les sous-catégories:", subsData);
+        )
+        console.log("Toutes les sous-catégories:", subsData);
       } else {
-        console.log("❌ Aucune sous-catégorie récupérée depuis l'API");
+        console.log("Aucune sous-catégorie récupérée depuis l'API");
       }
 
       setCategories(categoriesData);
       setSubs(subsData);
       setProducts(productsData);
-      console.log("✅ Data loading completed");
+      console.log("Data loading completed");
     } catch (error) {
       showError("Error loading data");
-      console.error("❌ Error loading data:", error);
+      console.error("Error loading data:", error);
       // En cas d'erreur, initialiser avec des tableaux vides
       setCategories([]);
       setSubs([]);
       setProducts([]);
     } finally {
       setLoading(false);
-      console.log("🏁 Loading state set to false");
+      console.log("Loading state set to false");
     }
   };
 
@@ -149,13 +149,13 @@ const AdminProduct = () => {
       // Préparer les données pour l'envoi
       const submitData = new FormData();
 
-      console.log("🔍 formData reçu:", formData);
+      console.log("formData reçu:", formData);
 
       // Ajouter les champs texte - Approche alternative
-      console.log("🔍 formData reçu:", formData);
-      console.log("🔍 Clés disponibles dans formData:", Object.keys(formData));
-      console.log("🔍 Type de formData:", typeof formData);
-      console.log("🔍 formData est un objet:", typeof formData === "object");
+      console.log("formData reçu:", formData);
+      console.log(" Clés disponibles dans formData:", Object.keys(formData));
+      console.log(" Type de formData:", typeof formData);
+      console.log(" formData est un objet:", typeof formData === "object");
 
       // Ajouter manuellement chaque champ
       const fieldsToAdd = [
@@ -175,28 +175,28 @@ const AdminProduct = () => {
         if (formData[field] !== undefined) {
           const value = formData[field];
           console.log(
-            `📝 Ajout manuel: ${field} = ${value} (type: ${typeof value})`
+            `Ajout manuel: ${field} = ${value} (type: ${typeof value})`
           );
           submitData.append(field, value);
-          console.log(`✅ Ajouté au FormData: ${field} = ${value}`);
+          console.log(` Ajouté au FormData: ${field} = ${value}`);
         } else {
-          console.log(`❌ Champ manquant: ${field}`);
+          console.log(` Champ manquant: ${field}`);
         }
       });
 
       // Ajouter les images
       if (formData.images && formData.images.length > 0) {
-        console.log("📸 Images à ajouter:", formData.images);
+        console.log(" Images à ajouter:", formData.images);
         formData.images.forEach((image, index) => {
-          console.log(`📸 Ajout de l'image ${index}:`, image);
+          console.log(` Ajout de l'image ${index}:`, image);
           submitData.append("images", image);
         });
       } else {
-        console.log("❌ Aucune image à ajouter");
+        console.log(" Aucune image à ajouter");
       }
 
       // Debug: Vérifier le contenu du FormData
-      console.log("🔍 Contenu du FormData:");
+      console.log(" Contenu du FormData:");
       for (let [key, value] of submitData.entries()) {
         console.log(`  ${key}: ${value}`);
       }
@@ -214,7 +214,7 @@ const AdminProduct = () => {
         color: formData.color,
         brand: formData.brand,
       };
-      console.log("🔍 JSON Data pour debug:", jsonData);
+      console.log(" JSON Data pour debug:", jsonData);
 
       if (editingProduct) {
         await updateProduct(editingProduct._id, submitData, sessionToken);

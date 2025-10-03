@@ -3,11 +3,11 @@ import { privateApi, publicApi } from "./config/api";
 export const getCategories = async () => {
   try {
     const response = await publicApi.get(`/category/categories`);
-    console.log("✅ Response getCategories:", response);
+    console.log("Response getCategories:", response);
     return response;
   } catch (error) {
     console.error(
-      "❌ Error getCategories:",
+      "Error getCategories:",
       error.response?.data || error.message
     );
     throw error;
@@ -27,14 +27,14 @@ export const createCategory = async (category) => {
 };
 
 export const updateCategory = async (id, category) => {
-  console.log("🔍 Appel API updateCategory avec ID:", id);
+  console.log("Appel API updateCategory avec ID:", id);
   try {
     const response = await privateApi.put(`/category/category/${id}`, category);
-    console.log("✅ Réponse updateCategory:", response);
+    console.log("Réponse updateCategory:", response);
     return response;
   } catch (error) {
     console.error(
-      "❌ Erreur updateCategory:",
+      "Erreur updateCategory:",
       error.response?.data || error.message
     );
     throw error;
@@ -42,14 +42,14 @@ export const updateCategory = async (id, category) => {
 };
 
 export const deleteCategory = async (id) => {
-  console.log("🔍 Appel API deleteCategory avec ID:", id);
+  console.log("Appel API deleteCategory avec ID:", id);
   try {
     const response = await privateApi.delete(`/category/category/${id}`);
-    console.log("✅ Réponse deleteCategory:", response);
+    console.log("Réponse deleteCategory:", response);
     return response;
   } catch (error) {
     console.error(
-      "❌ Erreur deleteCategory:",
+      "Erreur deleteCategory:",
       error.response?.data || error.message
     );
     throw error;

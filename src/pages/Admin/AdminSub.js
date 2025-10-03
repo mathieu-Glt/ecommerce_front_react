@@ -16,8 +16,8 @@ const AdminSub = () => {
     dismissAll,
   } = useToast();
 
-  console.log("👤 Utilisateur connecté:", user);
-  console.log("🔑 Token présent:", !!token);
+  console.log(" Utilisateur connecté:", user);
+  console.log(" Token présent:", !!token);
 
   const [subs, setSubs] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -26,17 +26,17 @@ const AdminSub = () => {
   // Charger les catégories et sous-catégories
   useEffect(() => {
     if (token) {
-      console.log("🚀 useEffect déclenché - chargement des données");
+      console.log(" useEffect déclenché - chargement des données");
       loadData();
     }
   }, [token]);
 
   const loadData = async () => {
-    console.log("🔄 Début du chargement des données");
+    console.log(" Début du chargement des données");
     setLoading(true);
     try {
       console.log(
-        "🔍 Chargement des données avec token:",
+        "Chargement des données avec token:",
         token ? "Token présent" : "Token manquant"
       );
 
@@ -45,28 +45,28 @@ const AdminSub = () => {
         getSubs(token),
       ]);
 
-      console.log("📊 Réponse catégories:", categoriesRes);
-      console.log("📊 Réponse sous-catégories:", subsRes);
+      console.log(" Réponse catégories:", categoriesRes);
+      console.log(" Réponse sous-catégories:", subsRes);
 
       // S'assurer que les données sont des tableaux
       const categoriesData = categoriesRes || [];
       const subsData = subsRes || [];
 
-      console.log("📋 Catégories à définir:", categoriesData);
-      console.log("📋 Sous-catégories à définir:", subsData);
+      console.log(" Catégories à définir:", categoriesData);
+      console.log(" Sous-catégories à définir:", subsData);
 
       setCategories(categoriesData);
       setSubs(subsData);
-      console.log("✅ Chargement des données terminé");
+      console.log(" Chargement des données terminé");
     } catch (error) {
       showError("Erreur lors du chargement des données");
-      console.error("❌ Error loading data:", error);
+      console.error(" Error loading data:", error);
       // En cas d'erreur, initialiser avec des tableaux vides
       setCategories([]);
       setSubs([]);
     } finally {
       setLoading(false);
-      console.log("🏁 État de chargement mis à false");
+      console.log(" État de chargement mis à false");
     }
   };
 

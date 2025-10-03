@@ -10,7 +10,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 
-function NavigationCustom({
+function Navigation({
   paths,
   authenticatedUser,
   user,

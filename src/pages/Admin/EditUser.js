@@ -27,16 +27,16 @@ const EditUser = () => {
   const loadUser = async () => {
     try {
       setLoading(true);
-      console.log("🔍 Chargement de l'utilisateur avec ID:", userId);
-      console.log("🔑 Token:", token ? "Présent" : "Manquant");
+      console.log(" Chargement de l'utilisateur avec ID:", userId);
+      console.log(" Token:", token ? "Présent" : "Manquant");
 
       const userData = await getUserById(token, userId);
-      console.log("✅ Utilisateur récupéré:", userData);
+      console.log(" Utilisateur récupéré:", userData);
 
       setUserData(userData);
     } catch (error) {
-      console.error("❌ Erreur lors du chargement de l'utilisateur:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error(" Erreur lors du chargement de l'utilisateur:", error);
+      console.error(" Détails de l'erreur:", error.response?.data);
       showError("Erreur lors du chargement de l'utilisateur");
       navigate("/admin/users");
     } finally {
@@ -47,16 +47,16 @@ const EditUser = () => {
   const handleUserUpdated = async (updatedData) => {
     try {
       setSubmitting(true);
-      console.log("🔍 Mise à jour de l'utilisateur avec ID:", userId);
-      console.log("📝 Données à mettre à jour:", updatedData);
+      console.log(" Mise à jour de l'utilisateur avec ID:", userId);
+      console.log(" Données à mettre à jour:", updatedData);
 
       await updateUser(token, userId, updatedData);
 
       showSuccess("Utilisateur mis à jour avec succès");
       navigate("/admin/users");
     } catch (error) {
-      console.error("❌ Erreur lors de la mise à jour:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error(" Erreur lors de la mise à jour:", error);
+      console.error(" Détails de l'erreur:", error.response?.data);
       showError("Erreur lors de la mise à jour de l'utilisateur");
     } finally {
       setSubmitting(false);

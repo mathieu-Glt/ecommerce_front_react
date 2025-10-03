@@ -117,7 +117,6 @@ export const loginWithAzureAction = () => async (dispatch) => {
 // authActions.js
 
 export const fetchCurrentUser = () => async (dispatch) => {
-  console.log("🚀 Début fetchCurrentUser...");
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const tokenUrl = urlParams.get("token");
@@ -131,7 +130,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
     }
 
     if (tokenUrl && refreshToken) {
-      console.log("🔑 Tokens trouvés dans l'URL");
+      console.log("Tokens trouvés dans l'URL");
       localStorage.setItem("token", tokenUrl);
       localStorage.setItem("refreshToken", refreshToken);
     }
@@ -154,7 +153,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
     const token = res.data.token || localToken || "";
 
     if (res.status === 200 && user) {
-      console.log("✅ fetchCurrentUser success:", user.id);
+      console.log("fetchCurrentUser success:", user.id);
 
       // Connexion Socket.IO APRÈS authentification réussie
       const socket = connectSocket();
@@ -186,7 +185,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
           "user:connected",
           ({ user, token, refreshToken, socketId }) => {
             console.log(
-              "✅ User connected via Socket.IO:",
+              "User connected via Socket.IO:",
               user,
               "Socket:",
               socketId
@@ -201,13 +200,13 @@ export const fetchCurrentUser = () => async (dispatch) => {
 
         // Session expirée
         socket.on("session:expired", () => {
-          console.log("⏰ Session expirée");
+          console.log("Session expirée");
           dispatch(logout());
         });
 
         // Token rafraîchi
         socket.on("token:refreshed", ({ token }) => {
-          console.log("🔄 Token rafraîchi via Socket.IO");
+          console.log("Token rafraîchi via Socket.IO");
           localStorage.setItem("token", token);
           dispatch({
             type: "TOKEN_REFRESHED",
@@ -217,13 +216,13 @@ export const fetchCurrentUser = () => async (dispatch) => {
 
         // Authentification requise
         socket.on("auth:required", () => {
-          console.log("🔐 Authentification requise");
+          console.log("Authentification requise");
           dispatch(logout());
         });
 
         // Déconnexion
         socket.on("user:logged_out", () => {
-          console.log("🚪 Déconnecté par le serveur");
+          console.log("Déconnecté par le serveur");
           dispatch(logout());
         });
 
@@ -236,7 +235,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
 
         socket.on("user:heartbeat:ack", ({ timestamp }) => {
           console.log(
-            "💓 Heartbeat OK:",
+            "Heartbeat OK:",
             new Date(timestamp).toLocaleTimeString()
           );
         });
@@ -269,7 +268,7 @@ export const fetchCurrentUser = () => async (dispatch) => {
 
     throw new Error("Utilisateur non trouvé");
   } catch (err) {
-    console.error("❌ fetchCurrentUser error:", err);
+    console.error("fetchCurrentUser error:", err);
 
     dispatch({
       type: "GET_CURRENT_USER_ERROR",

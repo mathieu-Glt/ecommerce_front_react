@@ -14,13 +14,8 @@ export const fetchCategories = (token) => async (dispatch) => {
   dispatch({ type: "FETCH_CATEGORIES_START" });
   try {
     const data = await getCategories(token);
-    console.log("🔍 Données reçues dans fetchCategories:", data);
-    console.log("📊 Type de données:", typeof data);
-    console.log("📊 Est un tableau:", Array.isArray(data));
     dispatch({ type: "FETCH_CATEGORIES_SUCCESS", payload: data });
-    console.log("✅ Action FETCH_CATEGORIES_SUCCESS dispatchée");
   } catch (err) {
-    console.error("❌ Erreur dans fetchCategories:", err);
     dispatch({ type: "FETCH_CATEGORIES_ERROR", payload: err.message });
   }
 };

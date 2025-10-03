@@ -32,7 +32,7 @@ function AdminCategory() {
     const loadCategories = async () => {
       try {
         console.log(
-          "🔍 Chargement des catégories avec token:",
+          " Chargement des catégories avec token:",
           token ? "Présent" : "Manquant"
         );
         await dispatch(fetchCategories(token));
@@ -101,7 +101,7 @@ function AdminCategory() {
     navigate(`/admin/category/edit/${category._id}`);
   };
 
-  console.log("🔍 État des catégories:", {
+  console.log("État des catégories:", {
     categories,
     loading,
     error,

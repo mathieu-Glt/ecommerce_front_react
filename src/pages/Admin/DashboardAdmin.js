@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 function DashboardAdmin() {
-  // ✅ Récupérer le nom de l'utilisateur depuis redux
+  // Récupérer le nom de l'utilisateur depuis redux
   const { user } = useSelector((state) => state.user);
   console.log("user in Dashboard :: ", user);
 

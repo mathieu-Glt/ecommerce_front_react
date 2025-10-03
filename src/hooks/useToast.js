@@ -16,7 +16,7 @@ function useToast() {
     draggable: true,
   };
 
-  // ✅Succès
+  // Succès
   const showSuccess = useCallback((message, config = {}) => {
     console.log("message in showSuccess :: ", message);
     toast.success(message, { ...defaultConfig, ...config });

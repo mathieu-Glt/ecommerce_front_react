@@ -8,7 +8,7 @@ function Test() {
     <div className="container mt-4">
       <h1>Test component</h1>
       <div className="alert alert-success">
-        ✅ The Test component works correctly !
+        The Test component works correctly !
       </div>
 
       <div className="card">

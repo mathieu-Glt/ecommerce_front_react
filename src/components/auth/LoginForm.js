@@ -38,7 +38,7 @@ const LoginForm = ({
     if (errors[field]) setErrors((prev) => ({ ...prev, [field]: null }));
   };
 
-  // 🔹 Redirection Azure AD
+  // Redirection Azure AD
   // const handleAzureLogin = () => {
   //   console.log("Redirecting to Azure AD...");
   //   window.location.href = "http://localhost:8000/api/auth/azure";
@@ -84,7 +84,7 @@ const LoginForm = ({
           <GoogleLoginButton onClick={onGoogleLogin} loading={loading} />
         )}
 
-        {/* 🔹 Bouton Azure AD */}
+        {/* Bouton Azure AD */}
         <AzureLoginButton onClick={onAzureLogin} loading={loading} />
       </div>
 

@@ -29,16 +29,16 @@ const EditCategory = () => {
   const loadCategory = async () => {
     try {
       setLoading(true);
-      console.log("🔍 Chargement de la catégorie avec ID:", categoryId);
-      console.log("🔑 Token:", token ? "Présent" : "Manquant");
+      console.log("Chargement de la catégorie avec ID:", categoryId);
+      console.log("Token:", token ? "Présent" : "Manquant");
 
       const categoryData = await getCategory(categoryId, token);
-      console.log("✅ Catégorie récupérée:", categoryData);
+      console.log("Catégorie récupérée:", categoryData);
 
       setCategory(categoryData);
     } catch (error) {
-      console.error("❌ Erreur lors du chargement de la catégorie:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error("Erreur lors du chargement de la catégorie:", error);
+      console.error("Détails de l'erreur:", error.response?.data);
       showError("Erreur lors du chargement de la catégorie");
       navigate("/admin/categories");
     } finally {
@@ -49,16 +49,16 @@ const EditCategory = () => {
   const handleCategoryUpdated = async (updatedData) => {
     try {
       setSubmitting(true);
-      console.log("🔍 Mise à jour de la catégorie avec ID:", categoryId);
-      console.log("📝 Données à mettre à jour:", updatedData);
+      console.log("Mise à jour de la catégorie avec ID:", categoryId);
+      console.log("Données à mettre à jour:", updatedData);
 
       await updateCategory(categoryId, updatedData, token);
 
       showSuccess("Catégorie mise à jour avec succès");
       navigate("/admin/categories");
     } catch (error) {
-      console.error("❌ Erreur lors de la mise à jour:", error);
-      console.error("❌ Détails de l'erreur:", error.response?.data);
+      console.error("Erreur lors de la mise à jour:", error);
+      console.error("Détails de l'erreur:", error.response?.data);
       showError("Erreur lors de la mise à jour de la catégorie");
     } finally {
       setSubmitting(false);
